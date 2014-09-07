@@ -22,25 +22,26 @@
 –ß‚è’l@@@Fint			‰ÁH‘ÎÛ•¶š—ñ‚ÌI’[F0
 à–¾@@@@Fs2‚©‚çsearch‚ªŒ©‚Â‚©‚é‚Ü‚Ås1‚É‘ã“ü‚µAs2‚Ìc‚è‚ğ¶‚ÉƒVƒtƒg‚·‚é
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int strspl(char *s1, char *s2, char search){
+int strspl(char *s1, char *s2, char search)
+{
 
-	int flag = 1;
-	char *p = s2, *q = s2;		/*s2‚ÌˆÊ’u•Û‘¶*/
+    int flag = 1;
+    char *p = s2, *q = s2;		/*s2‚ÌˆÊ’u•Û‘¶*/
 
-	if(s1 == NULL || s2 == NULL)
-		return 0;
+    if(s1 == NULL || s2 == NULL)
+        return 0;
 
-	while(*p != search && *p)	/*search‚É“–‚½‚é’¼‘O‚Ü‚Å‚Ì’l‚ğ*out‚É‘ã“ü */
-		*s1++ = *p++;
+    while(*p != search && *p)	/*search‚É“–‚½‚é’¼‘O‚Ü‚Å‚Ì’l‚ğ*out‚É‘ã“ü */
+        *s1++ = *p++;
 
-	if(!*p)						/*ŠY“–‚·‚é•¶š–³‚µ*/
-		flag = 0;
-	*s1 = '\0';				/*s1‚ÌÅŒã‚É\0‘ã“ü*/
-	p++;					/*‹æØ‚è•¶š‚Ì•ª‚¾‚¯ƒXƒLƒbƒv*/
-	while(*p)				/*c‚è‚Ì•¶š—ñ‚ğAæ“ª‚ÉƒVƒtƒg‚³‚¹‚é */
-		*q++ = *p++;
-	*q = '\0';
-	return flag;
+    if(!*p)						/*ŠY“–‚·‚é•¶š–³‚µ*/
+        flag = 0;
+    *s1 = '\0';				/*s1‚ÌÅŒã‚É\0‘ã“ü*/
+    p++;					/*‹æØ‚è•¶š‚Ì•ª‚¾‚¯ƒXƒLƒbƒv*/
+    while(*p)				/*c‚è‚Ì•¶š—ñ‚ğAæ“ª‚ÉƒVƒtƒg‚³‚¹‚é */
+        *q++ = *p++;
+    *q = '\0';
+    return flag;
 }
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ƒvƒƒgƒ^ƒCƒvFchar *strsub (char *, const char *, int, int)
@@ -51,20 +52,21 @@ int strspl(char *s1, char *s2, char search){
 –ß‚è’l@@@Fchar *		s2‚Ìstart‚©‚çend‚Ü‚Å‚Ì•¶š—ñ
 à–¾@@@@Fs2‚Ìstart‚©‚çend‚Ü‚Å‚ğs1‚Ö”²‚«o‚·B
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *strsub(char *s1, const char *s2, int start, int end){
+char *strsub(char *s1, const char *s2, int start, int end)
+{
 
-	char	*p = s1;			/*s1‚ÌˆÊ’u•Û‘¶*/
+    char	*p = s1;			/*s1‚ÌˆÊ’u•Û‘¶*/
 
-	if(s1 == NULL || s2 == NULL)
-		return NULL;
+    if(s1 == NULL || s2 == NULL)
+        return NULL;
 
-	s2 += start;				/*s2‚Ìƒ|ƒCƒ“ƒ^‚ğw’è”i‚ß‚é*/
-	while(start < end-- && *s2)	/*w’è•¶š”•ªs1‚ÖƒRƒs[‚·‚é*/
-		*p++ = *s2++;
+    s2 += start;				/*s2‚Ìƒ|ƒCƒ“ƒ^‚ğw’è”i‚ß‚é*/
+    while(start < end-- && *s2)	/*w’è•¶š”•ªs1‚ÖƒRƒs[‚·‚é*/
+        *p++ = *s2++;
 
-	*p = '\0';
+    *p = '\0';
 
-	return s1;
+    return s1;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -75,49 +77,50 @@ char *strsub(char *s1, const char *s2, int start, int end){
 –ß‚è’l@@@Fchar *		’uŠ·I—¹Œã‚Ì•¶š—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 à–¾@@@@Fin‚©‚çsearch‚ğŒŸõ‚µAreplace‚É’u‚«Š·‚¦‚éB
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *replacestring(char *strIn, char *strSearch, char *strReplace){
+char *replacestring(char *strIn, char *strSearch, char *strReplace)
+{
 
-	unsigned int		lenInput = 0;
-	unsigned int		lenSearch = 0;
-	unsigned int		lenBuffer = 0;
-	unsigned int		lenReplace = 0;
-	unsigned int		sizeDest = 0;
-	unsigned int		len = 0;
-	char*				s;
-	char*				dest = NULL;
+    unsigned int		lenInput = 0;
+    unsigned int		lenSearch = 0;
+    unsigned int		lenBuffer = 0;
+    unsigned int		lenReplace = 0;
+    unsigned int		sizeDest = 0;
+    unsigned int		len = 0;
+    char*				s;
+    char*				dest = NULL;
 
-	if(strIn == NULL || strSearch == NULL || strReplace == NULL)
-		return strIn;
-	else if(strlen(strIn) == 0)
-		return NULL;
+    if(strIn == NULL || strSearch == NULL || strReplace == NULL)
+        return strIn;
+    else if(strlen(strIn) == 0)
+        return NULL;
 
-	lenSearch = strlen(strSearch);
-	lenReplace = strlen(strReplace);
-	
-	sizeDest = (lenReplace + (lenReplace % lenSearch)) / lenSearch;
-	if((dest = (char *)malloc(strlen(strIn) * (sizeDest + 1))) == NULL)
-		return NULL;
-	memset( (char *)dest, 0, sizeof( dest ) );
+    lenSearch = strlen(strSearch);
+    lenReplace = strlen(strReplace);
 
-	if(lenSearch <= 0){		/*ŒŸõ•¶š—ñ’·‚ª0‚Ìê‡‚Í•¶š—ñ‚ğ‚»‚Ì‚Ü‚Ü•Ô‚·*/
-		strcpy(dest, strIn);
-		return dest;
-	}
-	while(1){
-		lenInput = strlen(strIn);		/*“ü—Í•¶š—ñ’·*/
-		if((s = strstr(strIn, strSearch)) == NULL){
-			strcat(dest, strIn);
-			break;
-		}
-		lenBuffer = strlen(s);
-		len = lenInput - lenBuffer;
-		strncat(dest, strIn, len);
-		strIn += len;
-		strcat(dest, strReplace);
-		s += lenSearch;
-		strIn = s;
-	}
-	return dest;
+    sizeDest = (lenReplace + (lenReplace % lenSearch)) / lenSearch;
+    if((dest = (char *)malloc(strlen(strIn) * (sizeDest + 1))) == NULL)
+        return NULL;
+    memset( (char *)dest, 0, sizeof( dest ) );
+
+    if(lenSearch <= 0) {		/*ŒŸõ•¶š—ñ’·‚ª0‚Ìê‡‚Í•¶š—ñ‚ğ‚»‚Ì‚Ü‚Ü•Ô‚·*/
+        strcpy(dest, strIn);
+        return dest;
+    }
+    while(1) {
+        lenInput = strlen(strIn);		/*“ü—Í•¶š—ñ’·*/
+        if((s = strstr(strIn, strSearch)) == NULL) {
+            strcat(dest, strIn);
+            break;
+        }
+        lenBuffer = strlen(s);
+        len = lenInput - lenBuffer;
+        strncat(dest, strIn, len);
+        strIn += len;
+        strcat(dest, strReplace);
+        s += lenSearch;
+        strIn = s;
+    }
+    return dest;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -126,17 +129,18 @@ char *replacestring(char *strIn, char *strSearch, char *strReplace){
 –ß‚è’l@@@Fchar*			•ÏŠ·Œã‚Ì•¶š—ñ
 à–¾@@@@Fstr‚ğ‘S‚Ä¬•¶š‚É•ÏŠ·‚·‚é
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *trLower(char *str){
+char *trLower(char *str)
+{
 
-	char *p = str;
+    char *p = str;
 
-	while(*str++){
-		if('A' <= *str && *str <= 'Z')
-			*str += ' ';
-	}
-	str = p;
+    while(*str++) {
+        if('A' <= *str && *str <= 'Z')
+            *str += ' ';
+    }
+    str = p;
 
-	return str;
+    return str;
 }
 
 /*-----------------------------------------------------------------------------
@@ -147,14 +151,15 @@ Arguments  : char s1 ... Ši”[æ•Ï”iÅ’ás2‚ğŠi”[‚Å‚«‚éƒTƒCƒY•ªŠm•Û‚³‚ê‚Ä‚¢‚é•K—
 Returns    : char * ... s1‚Ìæ“ªƒAƒhƒŒƒX
 Description: s2‚©‚çc‚ğ’T‚µAŒ©‚Â‚©‚é‚Ü‚Ås1‚Ö‘ã“ü‚·‚é
 -----------------------------------------------------------------------------*/
-char *strhead( char *s1, char *s2, int c ){
+char *strhead( char *s1, char *s2, int c )
+{
 
-	char *p = s1;	/*ˆÊ’u•Û‘¶*/
+    char *p = s1;	/*ˆÊ’u•Û‘¶*/
 
-	while( *s2 != (char)c && *s2)
-		*p++ = *s2++;
-	*p = '\0';
+    while( *s2 != (char)c && *s2)
+        *p++ = *s2++;
+    *p = '\0';
 
-	return s1;
+    return s1;
 
 }

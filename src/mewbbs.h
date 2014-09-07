@@ -27,29 +27,29 @@
 #define MAX_CONFIG_LEN	(1024)
 #define FNAME_LEN (256)
 
-typedef struct mewbbsConfig{
+typedef struct mewbbsConfig {
 
-	char	aptitle[MAX_CONFIG_LEN];		/*表示するタイトル名*/
-	char	maintitle[MAX_CONFIG_LEN];		/*表示するタイトル名*/
-	char	subtitle[MAX_CONFIG_LEN];		/*サブタイトル名*/
-	int		max;							/*タイトル表示数*/
-	int		tag;							/*タグの使用（許可(1)・不許可(0)）*/
-	char	background[MAX_CONFIG_LEN];		/*背景(BODYタグのBACKGROUND)*/
-	char	bgcolor[MAX_CONFIG_LEN];		/*背景色(BODYタグのBGCOLOR)*/
-	char	text[MAX_CONFIG_LEN];			/*文字色(BODYタグのTEXT)*/
-	char	link_color[MAX_CONFIG_LEN];		/*リンク文字色(BODYタグのLINK)*/
-	char	vlink[MAX_CONFIG_LEN];			/*既リンク文字色(BODYタグのVLINK)*/
-	char	alink[MAX_CONFIG_LEN];			/*リンク中文字色(BODYタグのALINK)*/
-	char	title_color[MAX_CONFIG_LEN];	/*タイトルの色*/
-	int		flag_write;						/*書き込み（許可(0)・不許可(1)）*/
-	int		fweight;						/*フォントの太さ*/
-	int		fsize;							/*フォントのサイズ*/
-	int		regmax;							/*最大登録数*/
-	char	home_url[MAX_CONFIG_LEN];		/*掲示板終了後ジャンプするURL*/
-	int		proxy;				/**/
-	int		hostchk;				/**/
+    char	aptitle[MAX_CONFIG_LEN];		/*表示するタイトル名*/
+    char	maintitle[MAX_CONFIG_LEN];		/*表示するタイトル名*/
+    char	subtitle[MAX_CONFIG_LEN];		/*サブタイトル名*/
+    int		max;							/*タイトル表示数*/
+    int		tag;							/*タグの使用（許可(1)・不許可(0)）*/
+    char	background[MAX_CONFIG_LEN];		/*背景(BODYタグのBACKGROUND)*/
+    char	bgcolor[MAX_CONFIG_LEN];		/*背景色(BODYタグのBGCOLOR)*/
+    char	text[MAX_CONFIG_LEN];			/*文字色(BODYタグのTEXT)*/
+    char	link_color[MAX_CONFIG_LEN];		/*リンク文字色(BODYタグのLINK)*/
+    char	vlink[MAX_CONFIG_LEN];			/*既リンク文字色(BODYタグのVLINK)*/
+    char	alink[MAX_CONFIG_LEN];			/*リンク中文字色(BODYタグのALINK)*/
+    char	title_color[MAX_CONFIG_LEN];	/*タイトルの色*/
+    int		flag_write;						/*書き込み（許可(0)・不許可(1)）*/
+    int		fweight;						/*フォントの太さ*/
+    int		fsize;							/*フォントのサイズ*/
+    int		regmax;							/*最大登録数*/
+    char	home_url[MAX_CONFIG_LEN];		/*掲示板終了後ジャンプするURL*/
+    int		proxy;				/**/
+    int		hostchk;				/**/
 
-}CF;
+} CF;
 
 char	empty[] = "\0";		/*空の文字列*/
 char	untitled[] = "（無題）";	/*タイトルが入力されなかった場合に使うタイトル*/

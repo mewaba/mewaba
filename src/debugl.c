@@ -23,15 +23,16 @@ Return     : void
 Description: デバッグログの出力先ファイル名を設定する
              この関数を実行しない場合はカレントディレクトリのdebuglogになる
 -----------------------------------------------------------------------------*/
-void dInitl( char *fname ){
+void dInitl( char *fname )
+{
 
-	if( strlen( fname ) > FNAME_LEN ){
-		perror("Too long filename.(dInit())");
-		return;
-	}
-	strcpy( debuglog, fname );
+    if( strlen( fname ) > FNAME_LEN ) {
+        perror("Too long filename.(dInit())");
+        return;
+    }
+    strcpy( debuglog, fname );
 
-	return;
+    return;
 
 }
 
@@ -45,35 +46,36 @@ Arguments  : char *msg ... 出力するメッセージ
 Return     : void
 Description: デバッグログを出力する
 -----------------------------------------------------------------------------*/
-void dPrintl( char *msg, const char *srcname, unsigned int srcline){
+void dPrintl( char *msg, const char *srcname, unsigned int srcline)
+{
 
-	FILE *dfp;
-	char *buf;
-	struct tm *jst;
-	time_t ti;
+    FILE *dfp;
+    char *buf;
+    struct tm *jst;
+    time_t ti;
 
-	ti = time(NULL);
-	ti += 9*60*60;		/*GMT→JST*/
-	jst = gmtime(&ti);
+    ti = time(NULL);
+    ti += 9*60*60;		/*GMT→JST*/
+    jst = gmtime(&ti);
 
-	buf = (char *)malloc( strlen(msg) + 1 );
-	if( buf == NULL ){
-		perror("Memory allocation error.(dPrint())");
-		return;
-	}
-	strcpy( buf, msg );
-	removeNewline(buf);
+    buf = (char *)malloc( strlen(msg) + 1 );
+    if( buf == NULL ) {
+        perror("Memory allocation error.(dPrint())");
+        return;
+    }
+    strcpy( buf, msg );
+    removeNewline(buf);
 
-	if( (dfp = fopen( debuglog, "a" )) == NULL ){
-		perror("File open error.(dPrint())");
-		free( buf );
-		return;
-	}
+    if( (dfp = fopen( debuglog, "a" )) == NULL ) {
+        perror("File open error.(dPrint())");
+        free( buf );
+        return;
+    }
 
-	fprintf( dfp, "[%02d/%02d/%02d:%02d %s:%d] %s\n", jst->tm_mon+1, jst->tm_mday, jst->tm_hour, jst->tm_min, srcname, srcline, buf );
-	fclose( dfp );
-	free( buf );
+    fprintf( dfp, "[%02d/%02d/%02d:%02d %s:%d] %s\n", jst->tm_mon+1, jst->tm_mday, jst->tm_hour, jst->tm_min, srcname, srcline, buf );
+    fclose( dfp );
+    free( buf );
 
-	return;
+    return;
 
 }

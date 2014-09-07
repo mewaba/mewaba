@@ -24,27 +24,28 @@
 　　　　　　　unsigned int 		削除する行（1からカウントした数）
 説明　　　　：指定されたファイルの指定行を削除する
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int delLine(char *fName, unsigned int lNumber){
+int delLine(char *fName, unsigned int lNumber)
+{
 
-	FILE			*fp;
-	unsigned int	i;
-	char			**buf2Dim;
+    FILE			*fp;
+    unsigned int	i;
+    char			**buf2Dim;
 
-	buf2Dim = readFile( fName );
-	if( buf2Dim == NULL )
-		return 0;
+    buf2Dim = readFile( fName );
+    if( buf2Dim == NULL )
+        return 0;
 
-	if((fp = fopen(fName, "w")) == NULL)
-		return 0;
-	for (i = 0; *(buf2Dim + i) ; i++){
-		if((i + 1) != lNumber)
-			fputs(*(buf2Dim + i),fp);
-	}
-	fclose(fp);
+    if((fp = fopen(fName, "w")) == NULL)
+        return 0;
+    for (i = 0; *(buf2Dim + i) ; i++) {
+        if((i + 1) != lNumber)
+            fputs(*(buf2Dim + i),fp);
+    }
+    fclose(fp);
 
-	freeTwoDimArray(buf2Dim);
+    freeTwoDimArray(buf2Dim);
 
-	return 1;
+    return 1;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -53,18 +54,19 @@ int delLine(char *fName, unsigned int lNumber){
 　　　　　　　char *host_name 		ホスト名
 説明　　　　：指定されたファイルに項目を追加する
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int addLine(char *fName, char *addString){
+int addLine(char *fName, char *addString)
+{
 
-	FILE	*fp;
+    FILE	*fp;
 
-	if((fp = fopen(fName, "a")) == NULL)
-		return 0;
+    if((fp = fopen(fName, "a")) == NULL)
+        return 0;
 
-	fprintf(fp,"%s\n", addString);
+    fprintf(fp,"%s\n", addString);
 
-	fclose(fp);
+    fclose(fp);
 
-	return 1;
+    return 1;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -75,26 +77,27 @@ int addLine(char *fName, char *addString){
 　　　　　　　					0:異常終了
 説明　　　　：fpで指定されるファイルの先頭に１行（str）書き込む。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int addLineTop(const char *fName, const char *str){
+int addLineTop(const char *fName, const char *str)
+{
 
-	unsigned int	i;
-	char			**bufRead;
-	FILE			*wfp;
+    unsigned int	i;
+    char			**bufRead;
+    FILE			*wfp;
 
-	bufRead = readFile(fName);
+    bufRead = readFile(fName);
 
-	if((wfp = fopen(fName, "w")) == NULL)
-		return 0;
+    if((wfp = fopen(fName, "w")) == NULL)
+        return 0;
 
-	fprintf(wfp, "%s\n" ,str);
-	for(i = 0; *(bufRead + i); i++)
-		fputs(*(bufRead + i), wfp);
+    fprintf(wfp, "%s\n" ,str);
+    for(i = 0; *(bufRead + i); i++)
+        fputs(*(bufRead + i), wfp);
 
-	fclose(wfp);
+    fclose(wfp);
 
-	freeTwoDimArray(bufRead);
+    freeTwoDimArray(bufRead);
 
-	return 1;
+    return 1;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -103,19 +106,20 @@ int addLineTop(const char *fName, const char *str){
 　　　　　　　unsigned int lines	解放する二次配列の配列数
 説明　　　　：動的に確保された二次配列Arrayを全て解放します。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void freeTwoDimArray(char **Array){
+void freeTwoDimArray(char **Array)
+{
 
-	unsigned int	i;
+    unsigned int	i;
 
-	if( Array != NULL ){
-		for( i = 0; *(Array + i); i++ )
-				free(*(Array + i));
+    if( Array != NULL ) {
+        for( i = 0; *(Array + i); i++ )
+            free(*(Array + i));
 
-		if(Array)
-			free(Array);
-	}
+        if(Array)
+            free(Array);
+    }
 
-	return;
+    return;
 
 }
 
@@ -127,34 +131,35 @@ void freeTwoDimArray(char **Array){
 説明　　　　：rfpで指定されたファイルから１行読み込み、その文字列を格納した
 　　　　　　　領域へのポインタを返す。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *fgetLine(FILE *rfp){
+char *fgetLine(FILE *rfp)
+{
 
-	char	buf[BUFSIZE];
-	char	*tmp = NULL;
+    char	buf[BUFSIZE];
+    char	*tmp = NULL;
 
-	while(fgets(buf, BUFSIZE, rfp) != NULL){
-		if(!tmp){
-			tmp = (char *)malloc(strlen(buf) + 1);
-			if(tmp == NULL){
-				perror("Memory allocation error.");
-				return NULL;
-			}
-			strcpy(tmp, buf);
-		}else{
-			tmp = (char *)realloc((char *)tmp, strlen(tmp) + strlen(buf) + 1);
-			if(tmp == NULL){
-				perror("Memory reallocation error.");
-				return NULL;
-			}
-			strcat(tmp, buf);
-		}
-		if(isNewLine(buf))
-			return tmp;
-		else if(strlen(buf) < BUFSIZE)
-			return tmp;
+    while(fgets(buf, BUFSIZE, rfp) != NULL) {
+        if(!tmp) {
+            tmp = (char *)malloc(strlen(buf) + 1);
+            if(tmp == NULL) {
+                perror("Memory allocation error.");
+                return NULL;
+            }
+            strcpy(tmp, buf);
+        } else {
+            tmp = (char *)realloc((char *)tmp, strlen(tmp) + strlen(buf) + 1);
+            if(tmp == NULL) {
+                perror("Memory reallocation error.");
+                return NULL;
+            }
+            strcat(tmp, buf);
+        }
+        if(isNewLine(buf))
+            return tmp;
+        else if(strlen(buf) < BUFSIZE)
+            return tmp;
 
-	}
-	return NULL;
+    }
+    return NULL;
 
 }
 
@@ -166,34 +171,35 @@ char *fgetLine(FILE *rfp){
 説明　　　　：fNameで指定されたファイルを読み込み、内容を格納した二次配列への
 　　　　　　　ポインタを返す。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char **readFile(const char *fName){
+char **readFile(const char *fName)
+{
 
-	char			*buf;
-	char			**bufRead = NULL;
-	FILE			*rfp;
-	unsigned int	i = 0;
+    char			*buf;
+    char			**bufRead = NULL;
+    FILE			*rfp;
+    unsigned int	i = 0;
 
-	if((rfp = fopen(fName, "r")) == NULL)
-		return NULL;
+    if((rfp = fopen(fName, "r")) == NULL)
+        return NULL;
 
-	while((buf = fgetLine(rfp)) != NULL){
-		bufRead = (char **)realloc(bufRead, sizeof(char *) * (i + 1));
-		if(bufRead == NULL){
-			perror("Memory reallocation error.");
-			return NULL;
-		}
-		*(bufRead + i) = buf;
-		i++;
-	}
-	bufRead = (char **)realloc(bufRead, sizeof(char *) * (i + 1));
-	if(bufRead == NULL){
-		perror("Memory reallocation error.");
-		return NULL;
-	}
-	*(bufRead + i) = NULL;
-	fclose( rfp );
+    while((buf = fgetLine(rfp)) != NULL) {
+        bufRead = (char **)realloc(bufRead, sizeof(char *) * (i + 1));
+        if(bufRead == NULL) {
+            perror("Memory reallocation error.");
+            return NULL;
+        }
+        *(bufRead + i) = buf;
+        i++;
+    }
+    bufRead = (char **)realloc(bufRead, sizeof(char *) * (i + 1));
+    if(bufRead == NULL) {
+        perror("Memory reallocation error.");
+        return NULL;
+    }
+    *(bufRead + i) = NULL;
+    fclose( rfp );
 
-	return bufRead;
+    return bufRead;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -201,19 +207,20 @@ char **readFile(const char *fName){
 引数　　　　：char *obj		対象となる文字列
 説明　　　　：obj中にCR、またはLFが存在した場合出てきた時点で文字列を切る
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void removeNewline(char *obj){
+void removeNewline(char *obj)
+{
 
-	char	*p = obj;	/*objの位置保存*/
+    char	*p = obj;	/*objの位置保存*/
 
-	while(*obj){
-		if(*obj != 0x0a && *obj != 0x0d)
-			obj++;		
-		else
-			*obj = '\0';
-	}
-	obj = p;	/*位置復元*/
+    while(*obj) {
+        if(*obj != 0x0a && *obj != 0x0d)
+            obj++;
+        else
+            *obj = '\0';
+    }
+    obj = p;	/*位置復元*/
 
-	return;
+    return;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -223,76 +230,82 @@ void removeNewline(char *obj){
 　　　　　　　　　　　　　　1：改行が存在する
 説明　　　　：strに改行が存在するかどうか調べる
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int isNewLine(char *str){
+int isNewLine(char *str)
+{
 
-	char	*s = str;
+    char	*s = str;
 
-	while(*str){
-		if(*str == 0x0a || *str == 0x0d){
-			str = s;
-			return 1;
-		}
-		str++;
-	}
-	str = s;
-	return 0;
+    while(*str) {
+        if(*str == 0x0a || *str == 0x0d) {
+            str = s;
+            return 1;
+        }
+        str++;
+    }
+    str = s;
+    return 0;
 
 }
 
-char *emptyAlloc( void ){
-	
-	char	*empty;
+char *emptyAlloc( void )
+{
 
-	empty = (char *)malloc( sizeof(char) * 1 );
-	if( empty == NULL )
-		return NULL;
-	*empty = '\0';
-	
-	return empty;
+    char	*empty;
+
+    empty = (char *)malloc( sizeof(char) * 1 );
+    if( empty == NULL )
+        return NULL;
+    *empty = '\0';
+
+    return empty;
 
 }
 
 #ifndef LOCK_SH	/*---flockがないOSでの処理---*/
 
-int f_lock( int fd ){
+int f_lock( int fd )
+{
 
-	while( lockf(fd, F_TLOCK, 0) == -1 ){
-		if( errno != EAGAIN )
-			return -1;
-	}
-	return 0;
+    while( lockf(fd, F_TLOCK, 0) == -1 ) {
+        if( errno != EAGAIN )
+            return -1;
+    }
+    return 0;
 
 }
 
-int f_unlock( int fd ){
+int f_unlock( int fd )
+{
 
-	while( lockf(fd, F_ULOCK, 0) == -1 ){
-		if( errno == EBADF || errno == ECOMM )
-			return -1;
-	}
+    while( lockf(fd, F_ULOCK, 0) == -1 ) {
+        if( errno == EBADF || errno == ECOMM )
+            return -1;
+    }
 
-	return 0;
+    return 0;
 
 }
 
 #else	/*---flockがあるOSでの処理---*/
 
-int f_lock ( int fd ){
+int f_lock ( int fd )
+{
 
-	if(flock(fd, LOCK_EX) == -1)
-		return -1;
+    if(flock(fd, LOCK_EX) == -1)
+        return -1;
 
-	return 0;
+    return 0;
 
 }
 
 
-int f_unlock ( int fd ){
+int f_unlock ( int fd )
+{
 
-	if(flock(fd, LOCK_UN) == -1)
-		return -1;
+    if(flock(fd, LOCK_UN) == -1)
+        return -1;
 
-	return 0;
+    return 0;
 
 }
 

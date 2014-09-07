@@ -36,41 +36,42 @@
 　　　　　　　TRUE		FQDN正しい
 説明　　　　：ホスト名とIPが一致するかどうかを判断する
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int ReverseDNS ( void ){
+int ReverseDNS ( void )
+{
 
-	char				*remotehost;
-	char				*remoteaddr;
-	char				*ipaddr;
-	char				*hostname;
+    char				*remotehost;
+    char				*remoteaddr;
+    char				*ipaddr;
+    char				*hostname;
 
-	remotehost = getenv( "REMOTE_HOST" );
+    remotehost = getenv( "REMOTE_HOST" );
 
-	if(	remotehost != NULL ){
+    if(	remotehost != NULL ) {
 
-		ipaddr = nresolve( remotehost );
-		if( ipaddr == NULL )
-			return TRUE;		/*逆引きできないホスト用にとりあえずTRUE*/
+        ipaddr = nresolve( remotehost );
+        if( ipaddr == NULL )
+            return TRUE;		/*逆引きできないホスト用にとりあえずTRUE*/
 
-		remoteaddr = getenv( "REMOTE_ADDR" );
-		if( remoteaddr == NULL )
-			return FALSE;		/*REMOTE_ADDRが取れなければFALSE*/
+        remoteaddr = getenv( "REMOTE_ADDR" );
+        if( remoteaddr == NULL )
+            return FALSE;		/*REMOTE_ADDRが取れなければFALSE*/
 
-		if(!strcasecmp( remoteaddr, ipaddr )){
+        if(!strcasecmp( remoteaddr, ipaddr )) {
 
-			hostname = iresolve( ipaddr );
-			if( hostname == NULL )
-				return TRUE;		/*正引きできないホスト用にとりあえずTRUE*/
+            hostname = iresolve( ipaddr );
+            if( hostname == NULL )
+                return TRUE;		/*正引きできないホスト用にとりあえずTRUE*/
 
-			if(strcasecmp( remotehost, hostname ) != 0)
-				return FALSE;		/*DNSに登録されているホスト名とREMOTE_HOSTが異なっていればFALSE*/
+            if(strcasecmp( remotehost, hostname ) != 0)
+                return FALSE;		/*DNSに登録されているホスト名とREMOTE_HOSTが異なっていればFALSE*/
 
-		}else{	/*REMOTE_ADDRとREMOTE_HOSTから引けるIPアドレスが異なっていればFALSE*/
+        } else {	/*REMOTE_ADDRとREMOTE_HOSTから引けるIPアドレスが異なっていればFALSE*/
 
-			return FALSE;
+            return FALSE;
 
-		}
-	}
-	return TRUE;
+        }
+    }
+    return TRUE;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -80,12 +81,13 @@ int ReverseDNS ( void ){
 　　　　　　　TRUE		IPである
 説明　　　　：REMOTE_HOSTに格納された値がホスト名かIPアドレスかを調べる
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int isIPAddress (char *remote_host){
+int isIPAddress (char *remote_host)
+{
 
-	if( inet_addr( remote_host ) == -1 )
-		return FALSE;
+    if( inet_addr( remote_host ) == -1 )
+        return FALSE;
 
-	return TRUE;
+    return TRUE;
 
 }
 
@@ -95,25 +97,26 @@ int isIPAddress (char *remote_host){
 　　　　　　　TRUE		つながらない
 説明　　　　：指定したIPの特定ポートへ接続を行う
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int IsProxy ( void ){
+int IsProxy ( void )
+{
 
-	int					i;
-	int					sd;
-	char *				srv;
+    int					i;
+    int					sd;
+    char *				srv;
 
-	unsigned int	Port[] = {80, 3128, 8000, 8080, 0};
+    unsigned int	Port[] = {80, 3128, 8000, 8080, 0};
 
-	if ((srv = getenv ("REMOTE_ADDR")) == NULL)
-		return FALSE;
+    if ((srv = getenv ("REMOTE_ADDR")) == NULL)
+        return FALSE;
 
-	for( i = 0; Port[i] != 0; i++ ){
-		if((sd = lConnect( srv, Port[i] )) != -1){
-			lClose( sd );
-			return FALSE;
-		}
-		lClose( sd );
-	}
-	return TRUE;
+    for( i = 0; Port[i] != 0; i++ ) {
+        if((sd = lConnect( srv, Port[i] )) != -1) {
+            lClose( sd );
+            return FALSE;
+        }
+        lClose( sd );
+    }
+    return TRUE;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -122,31 +125,31 @@ int IsProxy ( void ){
 　　　　　　　TRUE		PROXYを経由してない
 説明　　　　：環境変数からPROXYサーバ経由を検出
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int ViaProxy ( void ){
+int ViaProxy ( void )
+{
 
-	char *				lpHost;
+    char *				lpHost;
 
-	if (getenv ("HTTP_VIA") != NULL)
-		return (FALSE);
+    if (getenv ("HTTP_VIA") != NULL)
+        return (FALSE);
 
-	if (getenv ("HTTP_FORWARDED") != NULL)
-		return (FALSE);
+    if (getenv ("HTTP_FORWARDED") != NULL)
+        return (FALSE);
 
-	if (getenv ("HTTP_X_FORWARDED_FOR") != NULL)
-		return (FALSE);
+    if (getenv ("HTTP_X_FORWARDED_FOR") != NULL)
+        return (FALSE);
 
-	if ((lpHost = getenv ("REMOTE_HOST")) != NULL)
-	{
-		if (strstr (lpHost, "gate") != NULL)
-			return (FALSE);
+    if ((lpHost = getenv ("REMOTE_HOST")) != NULL) {
+        if (strstr (lpHost, "gate") != NULL)
+            return (FALSE);
 
-		if (strstr (lpHost, "cache") != NULL)
-			return (FALSE);
+        if (strstr (lpHost, "cache") != NULL)
+            return (FALSE);
 
-		if (strstr (lpHost, "proxy") != NULL)
-			return (FALSE);
-	}
-	return (TRUE);
+        if (strstr (lpHost, "proxy") != NULL)
+            return (FALSE);
+    }
+    return (TRUE);
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -155,11 +158,12 @@ int ViaProxy ( void ){
 　　　　　　　TRUE		匿名PROXYを経由してない
 説明　　　　：環境変数から匿名PROXYサーバ経由を検出
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int isAnonymousProxy ( void ){
+int isAnonymousProxy ( void )
+{
 
-	if (getenv ("HTTP_X_FORWARDED_FOR") != NULL)
-		return (FALSE);
+    if (getenv ("HTTP_X_FORWARDED_FOR") != NULL)
+        return (FALSE);
 
-	return TRUE;
+    return TRUE;
 
 }

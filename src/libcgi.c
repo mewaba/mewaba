@@ -27,34 +27,36 @@
 説明　　　　：使用しているブラウザを判別する
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
 
-int selectBrouser( void ){
+int selectBrouser( void )
+{
 
-	char	*useragent;
+    char	*useragent;
 
-	useragent = getenv( "HTTP_USER_AGENT" );
-	if( useragent == NULL )
-		return 0;
+    useragent = getenv( "HTTP_USER_AGENT" );
+    if( useragent == NULL )
+        return 0;
 
-	
-	if(strstr( useragent, "Mozilla" ) != NULL){
-		if(strstr( useragent, "MSIE" ) != NULL)		/*IE*/
-			return 1;
-		else										/*NN*/
-			return 2;
-	}
-	return 0;
+
+    if(strstr( useragent, "Mozilla" ) != NULL) {
+        if(strstr( useragent, "MSIE" ) != NULL)		/*IE*/
+            return 1;
+        else										/*NN*/
+            return 2;
+    }
+    return 0;
 
 }
 
 
-char tochar(char *x){
+char tochar(char *x)
+{
 
-	register char c;
+    register char c;
 
-	c  = (x[0] >= 'A' ? ((x[0] & 0xdf) - 'A') + 10 : (x[0] - '0'));
-	c *= 16;
-	c += (x[1] >= 'A' ? ((x[1] & 0xdf) - 'A') + 10 : (x[1] - '0'));
-	return(c);
+    c  = (x[0] >= 'A' ? ((x[0] & 0xdf) - 'A') + 10 : (x[0] - '0'));
+    c *= 16;
+    c += (x[1] >= 'A' ? ((x[1] & 0xdf) - 'A') + 10 : (x[1] - '0'));
+    return(c);
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -62,19 +64,19 @@ char tochar(char *x){
 引数　　　　：char *url		エンコードされた文字列
 説明　　　　：urlをデコードする。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void decode(char *url){
+void decode(char *url)
+{
 
-	register int i, j;
+    register int i, j;
 
-	for(i = 0, j = 0; url[j]; ++i, ++j){
-		if((url[i] = url[j]) == '%'){
-			url[i] = tochar(&url[j + 1]);
-			j += 2;
-		}
-		else if (url[i] == '+')
-		url[i] = ' ';
-	}
-	url[i] = '\0';
+    for(i = 0, j = 0; url[j]; ++i, ++j) {
+        if((url[i] = url[j]) == '%') {
+            url[i] = tochar(&url[j + 1]);
+            j += 2;
+        } else if (url[i] == '+')
+            url[i] = ' ';
+    }
+    url[i] = '\0';
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -84,58 +86,60 @@ void decode(char *url){
 戻り値　　　：int				name=vallueの組数
 説明　　　　：フォームのデータを受け取り、nameとvalueに分割する。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *getFormData( void ){
+char *getFormData( void )
+{
 
-	char *qstring = NULL;			/*stdin data*/
-	char *qs;
-	char *method;			/*REQUEST_METHOD*/
-	int ictl;				/*CONTENT_LENGTH*/
+    char *qstring = NULL;			/*stdin data*/
+    char *qs;
+    char *method;			/*REQUEST_METHOD*/
+    int ictl;				/*CONTENT_LENGTH*/
 
-	method = getenv("REQUEST_METHOD");	/*方式を調べる*/
-	if(method == NULL){
-		return NULL;
-	}else if(!strcmp(method, "POST")){	/*POSTの時*/
+    method = getenv("REQUEST_METHOD");	/*方式を調べる*/
+    if(method == NULL) {
+        return NULL;
+    } else if(!strcmp(method, "POST")) {	/*POSTの時*/
 
-		ictl = atoi(getenv("CONTENT_LENGTH"));
-		if(ictl == 0)	/*受け取るデータが存在しない*/
-			return NULL;
-		if((qstring = (char *)malloc( sizeof(char) * (ictl + 1))) == NULL)
-			return NULL;
-		memset( (char *)qstring, '\0', sizeof(qstring) );
-		if((fread(qstring, ictl, 1, stdin)) != 1)
-			return NULL;
-		qstring[ictl] = '\0';
+        ictl = atoi(getenv("CONTENT_LENGTH"));
+        if(ictl == 0)	/*受け取るデータが存在しない*/
+            return NULL;
+        if((qstring = (char *)malloc( sizeof(char) * (ictl + 1))) == NULL)
+            return NULL;
+        memset( (char *)qstring, '\0', sizeof(qstring) );
+        if((fread(qstring, ictl, 1, stdin)) != 1)
+            return NULL;
+        qstring[ictl] = '\0';
 
-	}else if(!strcmp(method, "GET")){			/*GETの時*/
-		qs = getenv("QUERY_STRING");
-		if(qs == NULL){
-			return NULL;
-		}else{
-			ictl = strlen(qs);
-			if((qstring = (char *)malloc(sizeof(char) * (ictl + 1))) == NULL)
-				return NULL;
-			strcpy(qstring,qs);
-		}
-	}
+    } else if(!strcmp(method, "GET")) {			/*GETの時*/
+        qs = getenv("QUERY_STRING");
+        if(qs == NULL) {
+            return NULL;
+        } else {
+            ictl = strlen(qs);
+            if((qstring = (char *)malloc(sizeof(char) * (ictl + 1))) == NULL)
+                return NULL;
+            strcpy(qstring,qs);
+        }
+    }
 
-	return qstring;
+    return qstring;
 
 }
 
-int getForm( char ***dname, char ***dvalue ){
+int getForm( char ***dname, char ***dvalue )
+{
 
-	char			*formdata;
-	unsigned int	count;
+    char			*formdata;
+    unsigned int	count;
 
-	formdata = getFormData();
-	if( formdata == NULL )
-		return -1;
+    formdata = getFormData();
+    if( formdata == NULL )
+        return -1;
 
-	count = dataSeparater( dname, dvalue, formdata );
-	if( count < 0 )
-		return -1;
+    count = dataSeparater( dname, dvalue, formdata );
+    if( count < 0 )
+        return -1;
 
-	return count;
+    return count;
 
 }
 
@@ -146,142 +150,146 @@ int getForm( char ***dname, char ***dvalue ){
 　　　　　　　int count		name=valueの組数
 説明　　　　：nameとvalueのメモリを解放する。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void freedata( char **name, char **value ){
-	
-	int i;
+void freedata( char **name, char **value )
+{
 
-	if( name != NULL ){
-		for(i = 0; *(name + i); i++){
-			if(*(name + i))
-				free(*(name + i));
-		}
-		if(name)
-			free(name);
-	}
+    int i;
 
-	if( value != NULL ){
-		for(i = 0; *(value + i); i++){
-			if(*(value + i))
-				free(*(value + i));
-		}
-		if(value)
-			free(value);
-	}
+    if( name != NULL ) {
+        for(i = 0; *(name + i); i++) {
+            if(*(name + i))
+                free(*(name + i));
+        }
+        if(name)
+            free(name);
+    }
 
-	return;
+    if( value != NULL ) {
+        for(i = 0; *(value + i); i++) {
+            if(*(value + i))
+                free(*(value + i));
+        }
+        if(value)
+            free(value);
+    }
 
-}
-
-char **getCookies( void ){
-
-	char			*http_cookie;	/*HTTP_COOKIE*/
-	char			*buf_http_cookie;
-	char			**tmp = NULL;
-	char			buf[BUFSIZE];
-	int				flag = 1;		/*strspl()で用いるフラグ*/
-	unsigned int	record_num;
-
-	http_cookie = getenv( "HTTP_COOKIE" );
-	if( http_cookie == NULL )	/*HTTP_COOKIEが存在しない場合*/
-		return NULL;
-
-	buf_http_cookie = (char *)malloc( strlen(http_cookie) + 2 );
-	if( buf_http_cookie == NULL )
-		return NULL;
-	sprintf( buf_http_cookie, " %s", http_cookie );
-
-	record_num = 0;
-	while( flag ){
-		tmp = (char **)realloc( tmp, sizeof(char **) * (record_num + 1) );
-		if( tmp == NULL )
-			return NULL;
-
-		*(tmp + record_num) = (char *)malloc( strlen(buf_http_cookie) + 1 );
-		if( *(tmp + record_num) == NULL )
-			return NULL;
-
-		flag = strspl( *(tmp + record_num), buf_http_cookie, ';' );
-		strspl(buf, *(tmp + record_num), ' ');
-		record_num++;
-	}
-
-	tmp = (char **)realloc( tmp, sizeof(char **) * (record_num + 1) );
-	if( tmp == NULL )
-		return NULL;
-	*(tmp + record_num) = NULL;		/*終端にNULL*/
-	free( buf_http_cookie );
-
-	return tmp;
+    return;
 
 }
 
-char *getCookieRecord( char *ckname , char **cookies ){
+char **getCookies( void )
+{
 
-	unsigned int	i;
-	char			*buf = NULL;
+    char			*http_cookie;	/*HTTP_COOKIE*/
+    char			*buf_http_cookie;
+    char			**tmp = NULL;
+    char			buf[BUFSIZE];
+    int				flag = 1;		/*strspl()で用いるフラグ*/
+    unsigned int	record_num;
 
-	i = 0;
-	while( *(cookies + i) ){
-		buf = (char *)malloc( strlen(*(cookies + i) + 1) );
-		if( buf == NULL )
-			return NULL;
-		strspl( buf, *(cookies + i), '=' );
-		if( !strcmp( buf, ckname ) ){
-			free( buf );
-			return *(cookies + i);
-		}
-		i++;
-	}
-	free( buf );
-	return NULL;
+    http_cookie = getenv( "HTTP_COOKIE" );
+    if( http_cookie == NULL )	/*HTTP_COOKIEが存在しない場合*/
+        return NULL;
+
+    buf_http_cookie = (char *)malloc( strlen(http_cookie) + 2 );
+    if( buf_http_cookie == NULL )
+        return NULL;
+    sprintf( buf_http_cookie, " %s", http_cookie );
+
+    record_num = 0;
+    while( flag ) {
+        tmp = (char **)realloc( tmp, sizeof(char **) * (record_num + 1) );
+        if( tmp == NULL )
+            return NULL;
+
+        *(tmp + record_num) = (char *)malloc( strlen(buf_http_cookie) + 1 );
+        if( *(tmp + record_num) == NULL )
+            return NULL;
+
+        flag = strspl( *(tmp + record_num), buf_http_cookie, ';' );
+        strspl(buf, *(tmp + record_num), ' ');
+        record_num++;
+    }
+
+    tmp = (char **)realloc( tmp, sizeof(char **) * (record_num + 1) );
+    if( tmp == NULL )
+        return NULL;
+    *(tmp + record_num) = NULL;		/*終端にNULL*/
+    free( buf_http_cookie );
+
+    return tmp;
 
 }
 
-int dataSeparater( char ***name, char ***value, char *data){
+char *getCookieRecord( char *ckname , char **cookies )
+{
 
-	int count;				/*ddname=dvalueの組数*/
-	char **tmpname = NULL,**tmpval = NULL;	/*dnameとdvalueを格納する２次配列*/
-	int flag = 1;
+    unsigned int	i;
+    char			*buf = NULL;
 
-	/*----- 分割＆デコード -----*/
-	count = 0;
-	while( flag ){
-		tmpval = (char **)realloc( tmpval, sizeof(char **) * (count + 1));
-		if( tmpval == NULL )
-			return -1;
-		*(tmpval + count) = (char*)malloc( strlen(data) + 1 );
-		if( *(tmpval + count) == NULL )
-			return -1;
-		memset( (char *)*(tmpval + count), '\0', sizeof(*(tmpval + count)) );
+    i = 0;
+    while( *(cookies + i) ) {
+        buf = (char *)malloc( strlen(*(cookies + i) + 1) );
+        if( buf == NULL )
+            return NULL;
+        strspl( buf, *(cookies + i), '=' );
+        if( !strcmp( buf, ckname ) ) {
+            free( buf );
+            return *(cookies + i);
+        }
+        i++;
+    }
+    free( buf );
+    return NULL;
 
-		tmpname = (char **)realloc( tmpname, sizeof(char **) * (count + 1));
-		if( tmpname == NULL )
-			return -1;
-		*(tmpname + count) = (char*)malloc( strlen(data) + 1 );
-		if( *(tmpname + count) == NULL )
-			return -1;
-		memset( (char *)*(tmpname + count), '\0', sizeof(*(tmpname + count)) );
+}
 
-		flag = strspl(*(tmpval + count), data, '&');
-		decode(*(tmpval + count));
-		strspl(*(tmpname + count), *(tmpval + count), '=');
+int dataSeparater( char ***name, char ***value, char *data)
+{
 
-		count++;
-	}
-	tmpval = (char **)realloc( tmpval, sizeof(char **) * (count + 1));
-	if( tmpval == NULL )
-		return -1;
-	*(tmpval + count) = NULL;
+    int count;				/*ddname=dvalueの組数*/
+    char **tmpname = NULL,**tmpval = NULL;	/*dnameとdvalueを格納する２次配列*/
+    int flag = 1;
 
-	tmpname = (char **)realloc( tmpname, sizeof(char **) * (count + 1));
-	if( tmpname == NULL )
-		return -1;
-	*(tmpname + count) = NULL;
+    /*----- 分割＆デコード -----*/
+    count = 0;
+    while( flag ) {
+        tmpval = (char **)realloc( tmpval, sizeof(char **) * (count + 1));
+        if( tmpval == NULL )
+            return -1;
+        *(tmpval + count) = (char*)malloc( strlen(data) + 1 );
+        if( *(tmpval + count) == NULL )
+            return -1;
+        memset( (char *)*(tmpval + count), '\0', sizeof(*(tmpval + count)) );
 
-	*name = tmpname;
-	*value = tmpval;
+        tmpname = (char **)realloc( tmpname, sizeof(char **) * (count + 1));
+        if( tmpname == NULL )
+            return -1;
+        *(tmpname + count) = (char*)malloc( strlen(data) + 1 );
+        if( *(tmpname + count) == NULL )
+            return -1;
+        memset( (char *)*(tmpname + count), '\0', sizeof(*(tmpname + count)) );
 
-	return count;
+        flag = strspl(*(tmpval + count), data, '&');
+        decode(*(tmpval + count));
+        strspl(*(tmpname + count), *(tmpval + count), '=');
+
+        count++;
+    }
+    tmpval = (char **)realloc( tmpval, sizeof(char **) * (count + 1));
+    if( tmpval == NULL )
+        return -1;
+    *(tmpval + count) = NULL;
+
+    tmpname = (char **)realloc( tmpname, sizeof(char **) * (count + 1));
+    if( tmpname == NULL )
+        return -1;
+    *(tmpname + count) = NULL;
+
+    *name = tmpname;
+    *value = tmpval;
+
+    return count;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -292,26 +300,27 @@ int dataSeparater( char ***name, char ***value, char *data){
 戻り値　　　：int				name=valueの組数
 説明　　　　：nameで指定されたcookieのnameとvalueを分割し格納する。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int getCookieData(char ***cname, char ***cvalue, char *name){
+int getCookieData(char ***cname, char ***cvalue, char *name)
+{
 
-	char			**cookies;
-	char			*record;
-	unsigned int	count;
+    char			**cookies;
+    char			*record;
+    unsigned int	count;
 
-	cookies = getCookies();
-	if( cookies == NULL )
-		return -1;
+    cookies = getCookies();
+    if( cookies == NULL )
+        return -1;
 
-	record = getCookieRecord( name, cookies );
-	if( record == NULL )
-		return -1;
+    record = getCookieRecord( name, cookies );
+    if( record == NULL )
+        return -1;
 
-	count = dataSeparater( cname, cvalue, record );
-	freeTwoDimArray( cookies );
-	if( count < 0 )
-		return -1;
+    count = dataSeparater( cname, cvalue, record );
+    freeTwoDimArray( cookies );
+    if( count < 0 )
+        return -1;
 
-	return count;
+    return count;
 
 }
 
@@ -321,15 +330,16 @@ int getCookieData(char ***cname, char ***cvalue, char *name){
 　　　　　　　const char *body			HTMLのBODY
 説明　　　　：messageで指定したエラーメッセージをBODYの色ページへ表示する。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void fatal_error(const char* message, const char* body){
+void fatal_error(const char* message, const char* body)
+{
 
-	printPageHeader( "致命的エラー" );
-	puts(body);
-	puts("<BLOCKQUOTE><BR><BR>");
-	puts(message);
-	puts("</BLOCKQUOTE></BODY></HTML>");
+    printPageHeader( "致命的エラー" );
+    puts(body);
+    puts("<BLOCKQUOTE><BR><BR>");
+    puts(message);
+    puts("</BLOCKQUOTE></BODY></HTML>");
 
-	return;
+    return;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -338,20 +348,21 @@ void fatal_error(const char* message, const char* body){
 戻り値　　　：int					取得したカウンタ
 説明　　　　：filenameからint型の数を読み込み返す。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int getCountInt(const char* file_path){
+int getCountInt(const char* file_path)
+{
 
-	int count;
-	char buf[6];
-	FILE *fp;
-	
-	if((fp = fopen(file_path,"r")) == NULL)
-		fatal_error("カウンターファイルが開けません","<BODY>");
+    int count;
+    char buf[6];
+    FILE *fp;
 
-	fgets(buf,6,fp);
-	count = atoi(buf);
-	fclose(fp);
+    if((fp = fopen(file_path,"r")) == NULL)
+        fatal_error("カウンターファイルが開けません","<BODY>");
 
-	return count;
+    fgets(buf,6,fp);
+    count = atoi(buf);
+    fclose(fp);
+
+    return count;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -360,24 +371,25 @@ int getCountInt(const char* file_path){
 　　　　　　　int count				int型の数
 説明　　　　：filenameで指定されたファイルへcountを書き込む。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int putCountInt(const char* file_path, int count){
+int putCountInt(const char* file_path, int count)
+{
 
-	FILE *fp;
-	
-	if((fp = fopen(file_path,"w")) == NULL)
-		return 1;
+    FILE *fp;
 
-	if(f_lock( fileno(fp) ) == -1 )
-		return 1;
+    if((fp = fopen(file_path,"w")) == NULL)
+        return 1;
 
-	fprintf(fp,"%05d\n",(count+1));
+    if(f_lock( fileno(fp) ) == -1 )
+        return 1;
 
-	if(f_unlock( fileno(fp) ) == -1 )
-		return 1;
+    fprintf(fp,"%05d\n",(count+1));
 
-	fclose(fp);
+    if(f_unlock( fileno(fp) ) == -1 )
+        return 1;
 
-	return 0;
+    fclose(fp);
+
+    return 0;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -386,28 +398,29 @@ int putCountInt(const char* file_path, int count){
 戻り値　　　：char *		チェック後の文字列
 説明　　　　：urlが正しい形式であるか調べる
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int check_url(char *url){
+int check_url(char *url)
+{
 
-	int i;
-	int count;
-	
-	i = 0;
-	count = 0;
-	while(url[i]){
-		if(url[i++] == '.')
-			count++;
-	}
-	if(i > 8){
-		if(count < 1)
-			return 0;
-		if(strstr(url, "://") == NULL)
-			return 0;
-		if(strstr(url, ",") != NULL)
-			return 0;
-	}else{
-		return 2;
-	}
-	return 1;
+    int i;
+    int count;
+
+    i = 0;
+    count = 0;
+    while(url[i]) {
+        if(url[i++] == '.')
+            count++;
+    }
+    if(i > 8) {
+        if(count < 1)
+            return 0;
+        if(strstr(url, "://") == NULL)
+            return 0;
+        if(strstr(url, ",") != NULL)
+            return 0;
+    } else {
+        return 2;
+    }
+    return 1;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -426,41 +439,42 @@ KeyName2=KeyValue2
 KeyName3=KeyValue3
 =============================================================================
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void setCfValue(const char *cfFname, const char *KeyName, const char *KeyValue){
+void setCfValue(const char *cfFname, const char *KeyName, const char *KeyValue)
+{
 
-	char			tmp[BUFSIZE];
-	char			tmp2[BUFSIZE];
-	char			**bufRead;
-	FILE			*wfp;
-	unsigned int	flag = 0;
-	unsigned int	i;
+    char			tmp[BUFSIZE];
+    char			tmp2[BUFSIZE];
+    char			**bufRead;
+    FILE			*wfp;
+    unsigned int	flag = 0;
+    unsigned int	i;
 
-	if((bufRead = readFile(cfFname)) != NULL){
-		if((wfp = fopen(cfFname, "w")) == NULL){
-			fatal_error("ファイルのオープンに失敗しました。(setCfValue()-2)", "<BODY>");
-			freeTwoDimArray(bufRead);	/*領域解放*/
-			exit(-1);
-		}
+    if((bufRead = readFile(cfFname)) != NULL) {
+        if((wfp = fopen(cfFname, "w")) == NULL) {
+            fatal_error("ファイルのオープンに失敗しました。(setCfValue()-2)", "<BODY>");
+            freeTwoDimArray(bufRead);	/*領域解放*/
+            exit(-1);
+        }
 
-		for (i = 0; *(bufRead + i); i++){
-			strcpy(tmp2, *(bufRead + i));
-			strspl(tmp, tmp2, '=');
-			if(!strcmp(tmp, KeyName)){
-				fprintf(wfp, "%s=%s\n", KeyName, KeyValue);
-				flag = 1;
-			}else{
-				fputs(*(bufRead + i), wfp);
-			}
-		}
-		fclose(wfp);
-		freeTwoDimArray(bufRead);	/*領域解放*/
-		if(flag == 0)		/*該当するキーが存在しなかった場合はそのキーを作成する*/
-			createCfKey(cfFname, KeyName, KeyValue);
+        for (i = 0; *(bufRead + i); i++) {
+            strcpy(tmp2, *(bufRead + i));
+            strspl(tmp, tmp2, '=');
+            if(!strcmp(tmp, KeyName)) {
+                fprintf(wfp, "%s=%s\n", KeyName, KeyValue);
+                flag = 1;
+            } else {
+                fputs(*(bufRead + i), wfp);
+            }
+        }
+        fclose(wfp);
+        freeTwoDimArray(bufRead);	/*領域解放*/
+        if(flag == 0)		/*該当するキーが存在しなかった場合はそのキーを作成する*/
+            createCfKey(cfFname, KeyName, KeyValue);
 
-	}else{
-		createCfKey(cfFname, KeyName, KeyValue);
-	}
-	return;
+    } else {
+        createCfKey(cfFname, KeyName, KeyValue);
+    }
+    return;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -471,19 +485,20 @@ void setCfValue(const char *cfFname, const char *KeyName, const char *KeyValue){
 説明　　　　：cfFnameで指定されたコンフィギュレーションファイルの最終行に
 　　　　　　　KeyName=KeyValueを追加する。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void createCfKey(const char *cfFname, const char *KeyName, const char *KeyValue){
+void createCfKey(const char *cfFname, const char *KeyName, const char *KeyValue)
+{
 
-	FILE			*afp;
+    FILE			*afp;
 
-	if((afp = fopen(cfFname, "a")) == NULL){
-		fatal_error("ファイルのオープンに失敗しました。(setCfValue()-2)", "<BODY>");
-		exit(-1);
-	}
+    if((afp = fopen(cfFname, "a")) == NULL) {
+        fatal_error("ファイルのオープンに失敗しました。(setCfValue()-2)", "<BODY>");
+        exit(-1);
+    }
 
-	fprintf(afp, "%s=%s\n", KeyName, KeyValue);
-	fclose(afp);
+    fprintf(afp, "%s=%s\n", KeyName, KeyValue);
+    fclose(afp);
 
-	return;
+    return;
 
 }
 
@@ -496,17 +511,18 @@ void createCfKey(const char *cfFname, const char *KeyName, const char *KeyValue)
 　　　　　　　　　　　　　　　　nameが存在しなかった場合はNULL
 説明　　　　：引数のnameで指定したvalueを返します。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *getValue(char *name, char **dname, char **dvalue){
+char *getValue(char *name, char **dname, char **dvalue)
+{
 
-	int	i;
+    int	i;
 
-	if( dname != NULL && dvalue != NULL ){
-		for(i = 0; *(dname + i); i++){
-			if(!strcmp(*(dname + i), name))
-				return *(dvalue + i);
-		}
-	}
-	return NULL;
+    if( dname != NULL && dvalue != NULL ) {
+        for(i = 0; *(dname + i); i++) {
+            if(!strcmp(*(dname + i), name))
+                return *(dvalue + i);
+        }
+    }
+    return NULL;
 
 }
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -520,23 +536,24 @@ char *getValue(char *name, char **dname, char **dvalue){
 説明　　　　：引数のnameで指定したvalueを返します。getValueとの違いは領域を確
 　　　　　　　保して返すかどうかである。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *getValueAlloc(char *name, char **dname, char **dvalue){
+char *getValueAlloc(char *name, char **dname, char **dvalue)
+{
 
-	int	i;
-	char	*buf = NULL;
+    int	i;
+    char	*buf = NULL;
 
-	buf = (char *)malloc(sizeof(char) * 2);
-	memset( (char *)buf, '\0', sizeof(buf));
+    buf = (char *)malloc(sizeof(char) * 2);
+    memset( (char *)buf, '\0', sizeof(buf));
 
-	if( dname != NULL && dvalue != NULL ){
-		for(i = 0; *(dname + i); i++){
-			if(!strcmp(*(dname + i), name)){
-				buf = (char *)realloc(buf, strlen(*(dvalue + i)) + 1);
-				strcpy(buf, *(dvalue + i));
-			}
-		}
-	}
-	return buf;
+    if( dname != NULL && dvalue != NULL ) {
+        for(i = 0; *(dname + i); i++) {
+            if(!strcmp(*(dname + i), name)) {
+                buf = (char *)realloc(buf, strlen(*(dvalue + i)) + 1);
+                strcpy(buf, *(dvalue + i));
+            }
+        }
+    }
+    return buf;
 
 }
 
@@ -548,31 +565,32 @@ char *getValueAlloc(char *name, char **dname, char **dvalue){
 説明　　　　：rfpで指定されたファイルからKeyNameに該当するValueを返す。
 　　　　　　　ただし、文字列のValueに限ります。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *getCfValueStr( char **file2Dim, const char *KeyName, char *KeyValue, size_t size){
+char *getCfValueStr( char **file2Dim, const char *KeyName, char *KeyValue, size_t size)
+{
 
-	unsigned int	i;
-	char			*tmpKeyName;
-	char			*buf;
+    unsigned int	i;
+    char			*tmpKeyName;
+    char			*buf;
 
-	memset( (char *)KeyValue, 0, sizeof(KeyValue) );
-	for(i = 0; *(file2Dim + i) ; i++){
-		buf = (char *)malloc(strlen(*(file2Dim + i)) + 1);
-		strcpy( buf, *(file2Dim + i) );
-		tmpKeyName = (char *)malloc(strlen(*(file2Dim + i)) + 1);
-		strspl(tmpKeyName, buf, '=');
-		if(!strcmp(KeyName, tmpKeyName)){
-			removeNewline(buf);
-			if( strlen(buf) < 1 )
-				return NULL;
-			strncpy(KeyValue, buf, size);
-			free( tmpKeyName );
-			free( buf );
-			return KeyValue;
-		}
-		free( tmpKeyName );
-		free( buf );
-	}
-	return NULL;
+    memset( (char *)KeyValue, 0, sizeof(KeyValue) );
+    for(i = 0; *(file2Dim + i) ; i++) {
+        buf = (char *)malloc(strlen(*(file2Dim + i)) + 1);
+        strcpy( buf, *(file2Dim + i) );
+        tmpKeyName = (char *)malloc(strlen(*(file2Dim + i)) + 1);
+        strspl(tmpKeyName, buf, '=');
+        if(!strcmp(KeyName, tmpKeyName)) {
+            removeNewline(buf);
+            if( strlen(buf) < 1 )
+                return NULL;
+            strncpy(KeyValue, buf, size);
+            free( tmpKeyName );
+            free( buf );
+            return KeyValue;
+        }
+        free( tmpKeyName );
+        free( buf );
+    }
+    return NULL;
 
 }
 
@@ -583,20 +601,21 @@ char *getCfValueStr( char **file2Dim, const char *KeyName, char *KeyValue, size_
 説明　　　　：rfpで指定されたファイルからKeyNameに該当するValueを返す。
 　　　　　　　ただし、int型のValueに限ります。存在しない場合は-1
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-int getCfValueInt(char **file2Dim, const char *KeyName){
+int getCfValueInt(char **file2Dim, const char *KeyName)
+{
 
-	unsigned int	i;
-	char			buf[BUFSIZE];
+    unsigned int	i;
+    char			buf[BUFSIZE];
 
-	if(getCfValueStr( file2Dim, KeyName, buf, 6) == NULL){
-		return -1;
-	}else{
-		for( i = 0; i < (strlen(buf) - 1); i++){
-			if( 0x30 > buf[i] ||  0x39 < buf[i] )
-				return -1;
-		}
-		return atoi( buf );
-	}
+    if(getCfValueStr( file2Dim, KeyName, buf, 6) == NULL) {
+        return -1;
+    } else {
+        for( i = 0; i < (strlen(buf) - 1); i++) {
+            if( 0x30 > buf[i] ||  0x39 < buf[i] )
+                return -1;
+        }
+        return atoi( buf );
+    }
 
 }
 
@@ -608,32 +627,34 @@ int getCfValueInt(char **file2Dim, const char *KeyName){
 　　　　　　　「Unknown」が代入される。また、この関数の使用後は該当する領域に
 　　　　　　　対して、必ずfreeEnvironment()をしなければならない。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *myGetEnv(const char *envName){
+char *myGetEnv(const char *envName)
+{
 
-	char *env;		/*環境変数*/
-	char *buf;		/*BUFFER*/
+    char *env;		/*環境変数*/
+    char *buf;		/*BUFFER*/
 
-	if((buf = getenv(envName)) == NULL){	/*環境変数の取得に失敗した時*/
-		env = (char *)malloc(sizeof(char) * 10);
-		strcpy(env, "Unknown");
-	}else{
-		env = (char *)malloc(strlen(buf) + 1);
-		strcpy(env, buf);
-	}
+    if((buf = getenv(envName)) == NULL) {	/*環境変数の取得に失敗した時*/
+        env = (char *)malloc(sizeof(char) * 10);
+        strcpy(env, "Unknown");
+    } else {
+        env = (char *)malloc(strlen(buf) + 1);
+        strcpy(env, buf);
+    }
 
-	return env;
+    return env;
 
 }
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 プロトタイプ：void freeEnvironment(char *)
 説明　　　　：環境変数格納用に確保された領域を解放する
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void freeEnvironment(char *env){
+void freeEnvironment(char *env)
+{
 
-	if(env)
-		free(env);
+    if(env)
+        free(env);
 
-	return;
+    return;
 
 }
 
@@ -642,24 +663,25 @@ void freeEnvironment(char *env){
 引数　　　　：const char *		ページのタイトル
 説明　　　　：CGIヘッダとHTMLヘッダを出力する
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void printPageHeader(const char *pageTitle){
+void printPageHeader(const char *pageTitle)
+{
 
-	printf("Content-Type: text/html\n\n");
-	printf("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n"
-			"<!--\n"
-			" Programed by Yuto Ikeno.\n"
-			" Copyright(C) 1996-99 Myu's Lab. All rights reserved.\n"
-			" mailto: mew@onbiz.net\n"
-			" http://www.onbiz.net/~mew/\n"
-			"-->\n"
-			"<HTML>\n\n"
-			"<HEAD>\n"
-			"<META HTTP-EQUIV=\"Content-Type\"  CONTENT=\"text/html; CHARSET=Shift_JIS\">\n"
-			"<LINK REV=MADE HREF=\"mailto:mew@onbiz.net\">\n"
-			"<TITLE>%s</TITLE>\n"
-			"</HEAD>\n\n" ,pageTitle);
+    printf("Content-Type: text/html\n\n");
+    printf("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n"
+           "<!--\n"
+           " Programed by Yuto Ikeno.\n"
+           " Copyright(C) 1996-99 Myu's Lab. All rights reserved.\n"
+           " mailto: mew@onbiz.net\n"
+           " http://www.onbiz.net/~mew/\n"
+           "-->\n"
+           "<HTML>\n\n"
+           "<HEAD>\n"
+           "<META HTTP-EQUIV=\"Content-Type\"  CONTENT=\"text/html; CHARSET=Shift_JIS\">\n"
+           "<LINK REV=MADE HREF=\"mailto:mew@onbiz.net\">\n"
+           "<TITLE>%s</TITLE>\n"
+           "</HEAD>\n\n" ,pageTitle);
 
-	return;
+    return;
 
 }
 
@@ -668,20 +690,21 @@ void printPageHeader(const char *pageTitle){
 引数　　　　：char *url		出力するURL
 説明　　　　：参照するURLを表示する。
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-void printUrl(char *url){
+void printUrl(char *url)
+{
 
-	int		count;
+    int		count;
 
-	for(count = 0 ; ; ){
-		if(*(url + count) == '\0')
-			break;
-		else
-			count++;
-	}
-	if(count > 10)
-		printf("\n\n<B>■ 参照：<A HREF=\"%s\" TARGET=\"_new\">%s</A></B></FONT>",url,url);
+    for(count = 0 ; ; ) {
+        if(*(url + count) == '\0')
+            break;
+        else
+            count++;
+    }
+    if(count > 10)
+        printf("\n\n<B>■ 参照：<A HREF=\"%s\" TARGET=\"_new\">%s</A></B></FONT>",url,url);
 
-	return;
+    return;
 }
 
 /*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -690,31 +713,32 @@ void printUrl(char *url){
 説明　　　　：strからHTMLタグを除去する
 　　　　　　　例）<B>あいうえお</B> → あいうえお
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-char *rmHtmlTag(char *str){
+char *rmHtmlTag(char *str)
+{
 
-	unsigned int	flag = 0;
-	char			*buf;
-	char			*p = str, *p2;
+    unsigned int	flag = 0;
+    char			*buf;
+    char			*p = str, *p2;
 
-	buf = (char *)malloc(strlen(str) + 1);
-	p2 = buf;
+    buf = (char *)malloc(strlen(str) + 1);
+    p2 = buf;
 
-	while(*str){
-		if(*str == '<'){
-			flag = 1;
-		}else if(flag == 1){
-			if(*str == '>')
-				flag = 0;
-		}else{
-			*buf++ = *str;
-		}
-		str++;
-	}
-	*buf = '\0';
-	buf = p2;
-	str = p;
+    while(*str) {
+        if(*str == '<') {
+            flag = 1;
+        } else if(flag == 1) {
+            if(*str == '>')
+                flag = 0;
+        } else {
+            *buf++ = *str;
+        }
+        str++;
+    }
+    *buf = '\0';
+    buf = p2;
+    str = p;
 
-	return buf;
+    return buf;
 }
 
 /*End of file*/
